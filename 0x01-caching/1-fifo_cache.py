@@ -12,27 +12,30 @@ class FIFOCache(BaseCaching):
 
     def __init__(self):
         """
-        Initialize the cache
+        Initialize  the cache
+            keys: list of key in order
         """
         super().__init__()
         self.keys = []
 
     def put(self, key, item):
         """
-        Assign a key-value pair to the cache if the limit is not reached.
-        Otherwise, delete the first item and add the new key-value pair.
+        assign a key to value to cache if limit not reached
+        otherwise delete the first item
         """
-        if key is not None and item is not None:
+        if key and item:
             if len(self.keys) >= self.MAX_ITEMS:
                 if key not in self.keys:
-                    del_key = self.keys.pop(0)
-                    del self.cache_data[del_key]
+                    print(f"DISCARD: {self.keys[0]}")
+                    del self.cache_data[self.keys[0]]
+                del self.keys[0]
             self.keys.append(key)
             self.cache_data[key] = item
 
     def get(self, key):
         """
-        Get the value associated with the given key from the cache.
-        If the key does not exist, return None.
+        Get the key from the dict
         """
-        return self.cache_data.get(key, None)
+        if key not in self.keys:
+            return None
+        return self.cache_data[key]
