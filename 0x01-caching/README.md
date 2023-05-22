@@ -1,6 +1,6 @@
 # Caching
 
-# Learning Objectives
+# Learning Objectives:
 
 # General
 * What a caching system is
