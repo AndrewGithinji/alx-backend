@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ Basic Babel setup """
 from flask import Flask, render_template, request, g
-from flask_babel import Babel, _
+from flask_babel import Babel, gettext as _
 from typing import Union
 from pytz import timezone, UnknownTimeZoneError
 
