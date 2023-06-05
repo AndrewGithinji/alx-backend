@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, _
 from typing import Union
-import pytz
+from pytz import timezone, UnknownTimeZoneError
 
 
 users = {
@@ -28,17 +28,13 @@ babel = Babel(app)
 
 @app.before_request
 def before_request(login_as: int = None):
-    """ Request of each function
-    """
+    """ Request of each function """
     user: dict = get_user()
     g.user = user
 
 
 def get_user() -> Union[dict, None]:
-    """ Get the user of the dict
-
-        Return User
-    """
+    """ Get the user from the dict """
     login_user = request.args.get('login_as', None)
 
     if login_user is None:
@@ -52,11 +48,7 @@ def get_user() -> Union[dict, None]:
 
 @babel.localeselector
 def get_locale():
-    """ Locale language
-
-        Return:
-            Best match to the language
-    """
+    """ Locale language """
     locale = request.args.get('locale', None)
 
     if locale and locale in app.config['LANGUAGES']:
@@ -71,27 +63,19 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone() -> str:
-    """ Locale language
-
-        1.Find timezone parameter in URL parameters
-        2.Find time zone from user settings
-        3.Default to UTC
-
-        Return:
-            Timezone or Default UTC
-    """
+    """ Timezone selection """
     try:
         if request.args.get("timezone"):
             timezone = request.args.get("timezone")
-            tzone = pytz.timezone(timezone)
+            tzone = timezone(timezone)
         elif g.user and g.user.get("timezone"):
             timezone = g.user.get("timezone")
-            tzone = pytz.timezone(timezone)
+            tzone = timezone(timezone)
         else:
             timezone = app.config["BABEL_DEFAULT_TIMEZONE"]
-            tzone = pytz.timezone(timezone)
+            tzone = timezone(timezone)
 
-    except exceptions.UnknownTimeZoneError:
+    except UnknownTimeZoneError:
         timezone = 'UTC'
 
     return timezone
@@ -99,11 +83,7 @@ def get_timezone() -> str:
 
 @app.route('/', methods=['GET'], strict_slashes=False)
 def hello_world():
-    """ Greeting
-
-        Return:
-            Initial template html
-    """
+    """ Greeting """
     return render_template('6-index.html')
 
 
